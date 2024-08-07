@@ -1,10 +1,10 @@
 import { MainLayout } from "./layouts";
-import { CurrencySwapForm } from "@/components"
+import { TokenConvertForm } from "@/components";
 
 const App = () => {
   return (
     <MainLayout>
-      <CurrencySwapForm />
+      <TokenConvertForm />
     </MainLayout>
   );
 };

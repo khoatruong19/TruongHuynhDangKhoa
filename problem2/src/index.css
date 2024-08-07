@@ -10,24 +10,34 @@ html{
 
 @layer base {
   :root {
-    --color-background: 19 19 19;
+    --color-background: 255 255 255;
     --color-primary: 252 116 254;
-    --color-text-primary: 255 255 255;
+    --color-secondary: 238 237 235;
+    --color-text-primary: 0 0 0;
+    --color-text-secondary: 155 155 155;
     --color-success: 0 200 81;
     --color-info: 51 181 229;
     --color-warn: 255 187 51;
     --color-error: 254 78 78;
   }
 
-  :root[class~="dark"] {
-    --color-background: 252 116 254;
-    --color-primary: 247 147 34;
-    --color-text-primary: 0 0 0;
+  :root[data-theme='dark'] {
+    --color-background: 19 19 19;
+    --color-primary: 252 116 254;
+    --color-secondary: 27 27 27;
+    --color-text-primary: 255 255 255;
+    --color-text-secondary: 155 155 155;
     --color-success: 0 200 81;
     --color-info: 51 181 229;
     --color-warn: 255 187 51;
     --color-error: 254 78 78;
   }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  } 
 }
 
 body {

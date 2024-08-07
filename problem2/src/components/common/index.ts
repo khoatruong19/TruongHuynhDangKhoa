@@ -3,3 +3,7 @@ export * from "./Typography";
 export * from "./Label";
 export * from "./Input";
 export * from "./Form";
+export * from "./Switch";
+export * from "./Tooltip";
+export * from "./Popover";
+export * from "./Dialog";
