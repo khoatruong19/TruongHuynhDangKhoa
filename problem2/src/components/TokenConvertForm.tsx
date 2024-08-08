@@ -1,20 +1,21 @@
 import { TokenInput, TokensReset } from "@/components";
 import { Button, Form } from "@/components/common";
 import { useTokenConvertForm } from "@/hooks/useTokenConvertForm";
-import { NullableToken } from "@/schemas/token";
-import { useState } from "react";
 import { TokensSwap } from "./TokensSwap";
 
 export const TokenConvertForm = () => {
-  const { form, resetForm, onSubmit } = useTokenConvertForm();
-
-  const [tokenA, setTokenA] = useState<NullableToken>(null);
-  const [tokenB, setTokenB] = useState<NullableToken>(null);
-
-  const swapTokens = () => {
-    setTokenA(tokenB);
-    setTokenB(tokenA);
-  };
+  const {
+    form,
+    isSwaping,
+    isDisabled,
+    tokenA,
+    tokenB,
+    setTokenA,
+    setTokenB,
+    swapTokens,
+    resetForm,
+    onSubmit,
+  } = useTokenConvertForm();
 
   return (
     <div className="max-w-[550px] w-full">
@@ -34,7 +35,7 @@ export const TokenConvertForm = () => {
                 <Form.Item>
                   <Form.Control>
                     <TokenInput
-                      label="Sell"
+                      label="1st"
                       {...field}
                       token={tokenA}
                       setToken={setTokenA}
@@ -58,13 +59,12 @@ export const TokenConvertForm = () => {
                 <Form.Item>
                   <Form.Control>
                     <TokenInput
-                      label="Buy"
+                      label="2nd"
                       {...field}
                       token={tokenB}
                       setToken={setTokenB}
                     />
                   </Form.Control>
-                  <Form.Message />
                 </Form.Item>
               )}
             />
@@ -74,6 +74,9 @@ export const TokenConvertForm = () => {
           size="xl"
           fullWidth
           className="rounded-2xl mt-1 bg-opacity-50 text-text-primary"
+          disabled={isDisabled}
+          isLoading={isSwaping}
+          onClick={form.handleSubmit(onSubmit)}
         >
           Convert
         </Button>

@@ -1,26 +1,29 @@
+import { useMemo, useRef, useState } from "react";
 import { Button, Dialog, Input, Label, Typography } from "@/components/common";
-import { TOKENS } from "@/constants/token";
-import { cn } from "@/libs/clsx";
+import { useGetTokens } from "@/hooks/query/useGetTokens";
 import { NullableToken, Token } from "@/schemas/token";
 import { ChevronDown, Search } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import TokenService from "@/services/token";
+import { cn } from "@/libs/clsx";
 
 type TokenSelectProps = {
   token: NullableToken;
-  setToken: React.Dispatch<React.SetStateAction<NullableToken>>;
+  setToken: (token: Token) => void;
 };
 
 export const TokenSelect = ({ token, setToken }: TokenSelectProps) => {
+  const { data: tokens } = useGetTokens({ allowFetch: true });
+
   const [searchTokenValue, setSearchTokenValue] = useState("");
 
   const dialogTriggerRef = useRef<HTMLButtonElement>(null);
 
   const filteredTokens = useMemo(
     () =>
-      TOKENS.filter((item) =>
-        item.label.toLowerCase().includes(searchTokenValue.toLowerCase())
-      ),
-    [searchTokenValue]
+      tokens?.filter((item) =>
+        item.currency.toLowerCase().includes(searchTokenValue.toLowerCase())
+      ) ?? [],
+    [tokens, searchTokenValue]
   );
 
   const handleSelectToken = (token: Token) => {
@@ -39,10 +42,10 @@ export const TokenSelect = ({ token, setToken }: TokenSelectProps) => {
             <div className="flex items-center gap-2">
               <img
                 alt="token"
-                src={token.image}
+                src={TokenService.getTokenSrc(token.currency)}
                 className="w-7 h-7 object-cover"
               />
-              <Typography level="p5">{token.label}</Typography>
+              <Typography level="p5">{token.currency}</Typography>
             </div>
             <ChevronDown size={20} />
           </Button>
@@ -75,7 +78,7 @@ export const TokenSelect = ({ token, setToken }: TokenSelectProps) => {
         <div className="h-96 overflow-y-auto scrollbar-thumb-gray-500 scrollbar-track-secondary scrollbar-thin">
           {filteredTokens.map((item) => (
             <TokenItem
-              key={item.label}
+              key={item.currency}
               token={item}
               isSelected={item === token}
               onClick={() => handleSelectToken(item)}
@@ -103,8 +106,17 @@ const TokenItem = ({ token, isSelected = false, onClick }: TokenItemProps) => {
       )}
       onClick={onClick}
     >
-      <img alt="token" src={token.image} className="w-11 h-11 object-cover" />
-      <Typography level="p4">{token.label}</Typography>
+      <img
+        alt="token"
+        src={TokenService.getTokenSrc(token.currency)}
+        className="w-11 h-11 object-cover"
+      />
+      <div>
+        <Typography level="p4">{token.currency}</Typography>
+        <Typography level="p7" className="text-text-secondary">
+          {token.price}
+        </Typography>
+      </div>
     </div>
   );
 };

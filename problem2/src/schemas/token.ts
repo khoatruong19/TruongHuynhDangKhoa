@@ -1,6 +1,11 @@
 export type Token = {
-  label: string;
-  image: string;
+  currency: string;
+  price: number;
+  date: string;
+};
+
+export type TokenWithAmount = Token & {
+  amount: number;
 };
 
 export type NullableToken = Token | null;

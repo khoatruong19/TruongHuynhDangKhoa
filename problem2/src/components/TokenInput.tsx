@@ -1,18 +1,20 @@
-import { Input, InputProps, Typography } from "@/components/common";
-import { cn } from "@/libs/clsx";
 import { forwardRef, useState } from "react";
+import { Input, Typography } from "@/components/common";
 import { TokenSelect } from "./TokenSelect";
-import { NullableToken } from "@/schemas/token";
+import { NullableToken, Token } from "@/schemas/token";
+import { ControllerRenderProps } from "react-hook-form";
+import { TokenConvertFormValues } from "@/hooks/useTokenConvertForm";
+import { cn } from "@/libs/clsx";
 
-type TokenInputProps = InputProps & {
+type TokenInputProps = ControllerRenderProps<TokenConvertFormValues> & {
   label: string;
   token: NullableToken;
-  setToken: React.Dispatch<React.SetStateAction<NullableToken>>;
+  setToken: (token: Token) => void;
 };
 
 export const TokenInput = forwardRef<HTMLInputElement, TokenInputProps>(
-  (props, ref) => {
-    const { label, token, setToken, ...inputProps } = props;
+  (props, _) => {
+    const { label, token, setToken, onChange, ...inputProps } = props;
 
     const [isOnFocus, setIsOnFocus] = useState(false);
 
@@ -29,7 +31,6 @@ export const TokenInput = forwardRef<HTMLInputElement, TokenInputProps>(
           </Typography>
           <div className="flex items-center gap-3">
             <Input
-              ref={ref}
               {...inputProps}
               type="number"
               inputMode="decimal"
@@ -38,7 +39,8 @@ export const TokenInput = forwardRef<HTMLInputElement, TokenInputProps>(
               fontSize="4xl"
               min={0}
               placeholder="0"
-              className="px-0"
+              className="px-0 truncate"
+              onChange={(event) => onChange(+event.target.value)}
               onFocus={() => setIsOnFocus(true)}
               onBlur={() => setIsOnFocus(false)}
             />

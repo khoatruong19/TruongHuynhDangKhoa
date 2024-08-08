@@ -60,7 +60,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const children = isLoading ? (
       <>
-        <Loader2 className={cn("h-4 w-4 animate-spin mr-2", loaderClassname)} />
+        <Loader2 className={cn("h-7 w-7 animate-spin mr-2", loaderClassname)} />
         {props.children}
       </>
     ) : (
