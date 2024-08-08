@@ -1,35 +1,26 @@
 import { TokenInput, TokensReset } from "@/components";
 import { Button, Form } from "@/components/common";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useTokenConvertForm } from "@/hooks/useTokenConvertForm";
+import { NullableToken } from "@/schemas/token";
+import { useState } from "react";
 import { TokensSwap } from "./TokensSwap";
 
-const FormSchema = z.object({
-  tokenA: z.number().min(0),
-  tokenB: z.number().min(0),
-});
-
 export const TokenConvertForm = () => {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      tokenA: 0,
-      tokenB: 0,
-    },
-  });
+  const { form, resetForm, onSubmit } = useTokenConvertForm();
 
-  const handleResetForm = () => form.reset();
+  const [tokenA, setTokenA] = useState<NullableToken>(null);
+  const [tokenB, setTokenB] = useState<NullableToken>(null);
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    alert(data);
+  const swapTokens = () => {
+    setTokenA(tokenB);
+    setTokenB(tokenA);
   };
 
   return (
     <div className="max-w-[550px] w-full">
       <div className="px-4 md:px-10 pt-8 md:pt-10 lg:pt-16 pb-10 flex flex-col">
         <div className="flex justify-end mb-4">
-          <TokensReset resetTokens={handleResetForm} />
+          <TokensReset resetTokens={resetForm} />
         </div>
         <Form {...form}>
           <form
@@ -42,7 +33,12 @@ export const TokenConvertForm = () => {
               render={({ field }) => (
                 <Form.Item>
                   <Form.Control>
-                    <TokenInput label="Sell" {...field} />
+                    <TokenInput
+                      label="Sell"
+                      {...field}
+                      token={tokenA}
+                      setToken={setTokenA}
+                    />
                   </Form.Control>
                   <Form.Message />
                 </Form.Item>
@@ -52,7 +48,7 @@ export const TokenConvertForm = () => {
             <TokensSwap
               type="button"
               className="absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]"
-              swapTokens={() => {}}
+              swapTokens={swapTokens}
             />
 
             <Form.Field
@@ -61,7 +57,12 @@ export const TokenConvertForm = () => {
               render={({ field }) => (
                 <Form.Item>
                   <Form.Control>
-                    <TokenInput label="Buy" {...field} />
+                    <TokenInput
+                      label="Buy"
+                      {...field}
+                      token={tokenB}
+                      setToken={setTokenB}
+                    />
                   </Form.Control>
                   <Form.Message />
                 </Form.Item>

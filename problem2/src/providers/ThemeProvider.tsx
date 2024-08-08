@@ -1,9 +1,21 @@
-import { useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
+import createContext from "@/libs/context";
 
-type ThemeValues = "light" | "dark";
+type Theme = "light" | "dark";
 
-export const useTheme = () => {
-  const [theme, setTheme] = useState<ThemeValues>("light");
+interface ThemeProviderValues {
+  theme: Theme;
+  toggleTheme: () => void;
+}
+
+const [Provider, useTheme] = createContext<ThemeProviderValues>({
+  name: "ThemeContext",
+});
+
+export { useTheme };
+
+export const ThemeProvider = ({ children }: PropsWithChildren) => {
+  const [theme, setTheme] = useState<Theme>("light");
 
   const handleToggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -24,7 +36,7 @@ export const useTheme = () => {
   useEffect(() => {
     if (typeof window === undefined) return;
 
-    const savedTheme = localStorage.getItem("theme") as ThemeValues;
+    const savedTheme = localStorage.getItem("theme") as Theme;
     if (!savedTheme) return;
 
     if (savedTheme === "dark") {
@@ -34,9 +46,14 @@ export const useTheme = () => {
     setTheme(savedTheme);
   }, []);
 
-  return {
-    theme,
-    setTheme,
-    toggleTheme: handleToggleTheme,
-  };
+  return (
+    <Provider
+      value={{
+        theme,
+        toggleTheme: handleToggleTheme,
+      }}
+    >
+      {children}
+    </Provider>
+  );
 };

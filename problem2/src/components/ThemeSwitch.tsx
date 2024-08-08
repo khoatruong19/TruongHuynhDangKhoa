@@ -1,8 +1,9 @@
 import { Switch } from "@/components/common";
-import { useTheme } from "@/hooks/useTheme";
+import { useTheme } from "@/providers/ThemeProvider";
 
 export const ThemeSwitch = () => {
   const { theme, toggleTheme } = useTheme();
+
   const isDarkTheme = theme === "dark";
 
   return (

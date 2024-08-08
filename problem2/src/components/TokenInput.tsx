@@ -2,14 +2,17 @@ import { Input, InputProps, Typography } from "@/components/common";
 import { cn } from "@/libs/clsx";
 import { forwardRef, useState } from "react";
 import { TokenSelect } from "./TokenSelect";
+import { NullableToken } from "@/schemas/token";
 
 type TokenInputProps = InputProps & {
   label: string;
+  token: NullableToken;
+  setToken: React.Dispatch<React.SetStateAction<NullableToken>>;
 };
 
 export const TokenInput = forwardRef<HTMLInputElement, TokenInputProps>(
   (props, ref) => {
-    const { label, ...inputProps } = props;
+    const { label, token, setToken, ...inputProps } = props;
 
     const [isOnFocus, setIsOnFocus] = useState(false);
 
@@ -39,7 +42,7 @@ export const TokenInput = forwardRef<HTMLInputElement, TokenInputProps>(
               onFocus={() => setIsOnFocus(true)}
               onBlur={() => setIsOnFocus(false)}
             />
-            <TokenSelect />
+            <TokenSelect token={token} setToken={setToken} />
           </div>
         </div>
       </div>

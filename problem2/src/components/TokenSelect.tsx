@@ -1,33 +1,37 @@
 import { Button, Dialog, Input, Label, Typography } from "@/components/common";
 import { TOKENS } from "@/constants/token";
 import { cn } from "@/libs/clsx";
-import { Token } from "@/schemas/token";
+import { NullableToken, Token } from "@/schemas/token";
 import { ChevronDown, Search } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
-export const TokenSelect = () => {
-  const [selectedToken, setSelectedToken] = useState<Token | null>(TOKENS[0]);
+type TokenSelectProps = {
+  token: NullableToken;
+  setToken: React.Dispatch<React.SetStateAction<NullableToken>>;
+};
+
+export const TokenSelect = ({ token, setToken }: TokenSelectProps) => {
   const [searchTokenValue, setSearchTokenValue] = useState("");
 
   const dialogTriggerRef = useRef<HTMLButtonElement>(null);
 
   const filteredTokens = useMemo(
     () =>
-      TOKENS.filter((token) =>
-        token.label.toLowerCase().includes(searchTokenValue.toLowerCase())
+      TOKENS.filter((item) =>
+        item.label.toLowerCase().includes(searchTokenValue.toLowerCase())
       ),
     [searchTokenValue]
   );
 
   const handleSelectToken = (token: Token) => {
-    setSelectedToken(token);
+    setToken(token);
     dialogTriggerRef.current?.click();
   };
 
   return (
     <Dialog>
       <Dialog.Trigger asChild className="w-full" ref={dialogTriggerRef}>
-        {selectedToken ? (
+        {token ? (
           <Button
             variant="secondary"
             className="px-0  min-w-[140px] w-fit font-semibold gap-2 text-lg rounded-3xl"
@@ -35,10 +39,10 @@ export const TokenSelect = () => {
             <div className="flex items-center gap-2">
               <img
                 alt="token"
-                src={selectedToken.image}
+                src={token.image}
                 className="w-7 h-7 object-cover"
               />
-              <Typography level="p5">{selectedToken.label}</Typography>
+              <Typography level="p5">{token.label}</Typography>
             </div>
             <ChevronDown size={20} />
           </Button>
@@ -69,12 +73,12 @@ export const TokenSelect = () => {
           </div>
         </div>
         <div className="h-96 overflow-y-auto scrollbar-thumb-gray-500 scrollbar-track-secondary scrollbar-thin">
-          {filteredTokens.map((token) => (
+          {filteredTokens.map((item) => (
             <TokenItem
-              key={token.label}
-              token={token}
-              isSelected={token === selectedToken}
-              onClick={() => handleSelectToken(token)}
+              key={item.label}
+              token={item}
+              isSelected={item === token}
+              onClick={() => handleSelectToken(item)}
             />
           ))}
         </div>
