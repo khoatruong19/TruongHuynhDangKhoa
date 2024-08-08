@@ -18,10 +18,7 @@ const sumByProgressionFormula = (n) => {
 };
 
 const sumByRecursive = (n) => {
-    if (n <= 1) {
-        return n;
-    }
-    return n + sumByRecursive(n - 1);
+    return n <= 1 ? n : sumByRecursive(n - 1);
 };
 
 const resultA = sumToN(5, sumByIterative);
