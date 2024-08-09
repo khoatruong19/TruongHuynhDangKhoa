@@ -3,28 +3,37 @@ ___
 ![Light](https://i.ibb.co/zhtBjhf/Screenshot-2024-08-09-at-10-11-31.png)
 ![Dark](https://i.ibb.co/gDJz1zp/Screenshot-2024-08-09-at-10-13-46.png)
 Currently, two official plugins are available:
-
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Description
+This is a ReactJS + Vite project named Token Converter. Essentially, this application allows users to exchange one cryptocurrency for another.
 
-## Expanding the ESLint configuration
+This is the link of the project: [Token Converter](https://99-tech-five.vercel.app/).
+Hope you guys enjoy it!
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Technologies
+These are technologies and libraries used to build this application:
++ ReactJS + Vite
++ TailwindCSS + Radix UI
++ react-hook-form + zod
++ Tanstack Query
+  
+## Features
++ Searching and select tokens to convert
++ Reset form inputs
++ Swap position between two selected tokens
++ Fully responsive
++ Two themes "dark" and "light"
 
-- Configure the top-level `parserOptions` property like this:
+## Installation
+If you want to run the project at your local machine, here are the steps:
+1. Clone this repository and install all dependencies.
+2. Run projects using `npm run dev` script if you're using **npm** or `yarn dev` for **yarn**
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## Contributing
+This is just a small side project for my personal works. Please don't use this project for:
+1. Commercial Purposes
+2. Distributing this project after modifying it
+3. You may not use this without appropriate attribution
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+**If you have any advices or suggestions to make the app better, feel free to submit them to this repo. Thanks!**
