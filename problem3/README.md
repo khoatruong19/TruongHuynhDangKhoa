@@ -2,7 +2,7 @@
 
 ## Issues
 These are some issues emphasized below:
-+ Redundant type ***FormattedWalletBalance*** as it's fields is duplicated with *** WalletBalance*** and is unnecessary.
++ Redundant type ***FormattedWalletBalance*** as it's fields is duplicated with ***WalletBalance*** and is unnecessary.
 + ***getPriority*** should be place outside component as it doesn't have anything to do with React
 + Not clear and inefficient functions, types, interfaces, variables naming
 + Complicated nested if conditions in sorting and filtering array
