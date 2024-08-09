@@ -2,7 +2,15 @@
 
 ## Issues
 These are some issues emphasized below:
-+ 
++ Redundant type ***FormattedWalletBalance*** as it's fields is duplicated with*** WalletBalance*** and is unnecessary.
++ ***getPriority*** should be place outside component as it doesn't have anything to do with React
++ Not clear and inefficient functions, types, interfaces, variables naming
++ Complicated nested if conditions in sorting and filtering array
++ Using index as component key for array manipulation
++ Using undefined variable ***balance.blockchain***, magic number ***-99***
++ Unused prop ***children***, duplicate component props inference
++ Redundant type declaration in sorting, filtering, mapping as it's already inferred.
++ Do not have fallback values for balances and prices usages
 
 ## Original Code
 ```ts
@@ -91,8 +99,8 @@ const WalletPage: React.FC<Props> = (props: Props) => {
 
 ## Refactored Code
 ```ts
-// constant for blockchain priorities, we can put this constant in a separate file, (ex: constants/blockchain.ts)
-const BLOCKCHAIN_PRIORITIES = {
+// constant for currency priorities, we can put this constant in a separate file, (ex: constants/currency.ts)
+const CURRENCY_PRIORITIES = {
   Osmosis: 100,
   Ethereum: 50,
   Arbitrum: 30,
@@ -100,29 +108,28 @@ const BLOCKCHAIN_PRIORITIES = {
   Neo: 20,
 } as const;
 
-// constant for blockchain priorities default value, we can put this constant in a separate file, (ex: constants/blockchain.ts)
-const BLOCKCHAIN_PRIORITIES_DEFAULT = -99
+// constant for currency priorities default value, we can put this constant in a separate file, (ex: constants/currency.ts)
+const CURRENCY_PRIORITIES_DEFAULT = -99
 
-// type for blockchain key, we can put this type in a separate file, (ex: schemas/blockchain.ts)
-type BlockchainPrioritiesKey = keyof typeof BLOCKCHAIN_PRIORITIES;
+// type for currency key, we can put this type in a separate file, (ex: schemas/currency.ts)
+type CurrencyPrioritiesKey = keyof typeof CURRENCY_PRIORITIES;
 
-// helper function to check if key is valid, we can put this func in a separate file, (ex: utils/blockchain.ts)
-const checkIsBlockchainPrioritiesKey = (key: string) : key is BlockchainPrioritiesKey => Object.keys(BLOCKCHAIN_PRIORITIES).includes(key); 
+// helper function to check if key is valid, we can put this func in a separate file, (ex: utils/currency.ts)
+const checkIsCurrencyPrioritiesKey = (key: string) : key is CurrencyPrioritiesKey => Object.keys(CURRENCY_PRIORITIES).includes(key); 
 
-// function to get blockchain priority, we can put this func in a separate file, (ex: utils/blockchain.ts)
-const getBlockchainPriority = (key: string) => {
-    if (checkIsBlockchainPrioritiesKey(key)) return BLOCKCHAIN_PRIORITIES[key]
-    return BLOCKCHAIN_PRIORITIES_DEFAULT
+// function to get currency priority, we can put this func in a separate file, (ex: utils/currency.ts)
+const getCurrencyPriority = (key: string) => {
+    if (checkIsCurrencyPrioritiesKey(key)) return CURRENCY_PRIORITIES[key]
+    return CURRENCY_PRIORITIES_DEFAULT
 }
 
-// add blockchain field for WalletBalance interface,  we can put this interface in a separate file, (ex: schemas/wallet.ts)
+// we can put this interface in a separate file, (ex: schemas/wallet.ts)
 interface WalletBalance {
   currency: string;
   amount: number;
-  blockchain: string;
 }
 
-// type for currency prices, we can put this interface in a separate file, (ex: schemas/wallet.ts)
+// type for currency prices, we can put this interface in a separate file, (ex: schemas/currency.ts)
 type CurrencyPrice = Record<string, number>;
 
 // rename component props to be more specific
@@ -133,14 +140,14 @@ const WalletPage = (props: WalletPageProps) => {
   const prices = usePrices(); //  // assume that usePrices return type CurrencyPrice
 
   // -> use ?? operator to avoid falsy value
-  // -> filter balance whose priority is greater than BLOCKCHAIN_PRIORITIES_DEFAULT & amount greater than 0
+  // -> filter balance whose priority is greater than CURRENCY_PRIORITIES_DEFAULT & amount greater than 0
   // -> remove type declaration for current, next variables in sort func because of type inference
-  // -> sort balances by their blockchain priority
+  // -> sort balances by their currency priority
   // -> remove prices dependency as it's redundant
   const sortedBalances = useMemo(() => {
     return (balances ?? [])
-             .filter((balance: WalletBalance) => getBlockchainPriority(balance.blockchain) > BLOCKCHAIN_PRIORITIES_DEFAULT && balance.amount > 0)
-             .sort((current, next) => getBlockchainPriority(current.blockchain) - getBlockchainPriority(next.blockchain))
+             .filter((balance: WalletBalance) => getCurrencyPriority(balance.currency) > CURRENCY_PRIORITIES_DEFAULT && balance.amount > 0)
+             .sort((current, next) => getCurrencyPriority(current.currency) - getCurrencyPriority(next.currency))
     });
   }, [balances]);
 
@@ -149,14 +156,15 @@ const WalletPage = (props: WalletPageProps) => {
       {/* -> map sortedBalances to render WalletRow inside template because component's size is small*/}
       {sortedBalances?.map((balance) => {
         // -> calculate additional values for props passing to WalletRow
+        // -> use ? to avoid falsy value
         // -> use ?? operator to have fallback value if currency is not exist in prices
         const usdValue = (prices?.[balance.currency] ?? 0) * balance.amount;
         const formattedAmount = balance.amount.toFixed();
         return (
           // WalletRow should be memorized for better performance.
           <WalletRow
-            // Combine blockchain and currency to create a key. Because there might be duplicated.
-            key={`${balance.blockchain} - ${balance.currency}`}
+            // -> Avoid using index for component key as the array elements are changed due to sorting or filtering 
+            key={balance.currency}
             className={classes.row} // assume classes.row is exist
             amount={balance.amount}
             usdValue={usdValue}
